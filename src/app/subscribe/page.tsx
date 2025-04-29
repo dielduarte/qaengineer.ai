@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 function Subscribe() {
   const searchParams = useSearchParams()
  
@@ -47,7 +47,9 @@ function Subscribe() {
 }
 export default function SubscribePage() {
   return (
-    <Subscribe />
+    <Suspense>
+      <Subscribe />
+    </Suspense>
   )
 }
 
