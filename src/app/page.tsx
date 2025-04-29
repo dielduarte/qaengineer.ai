@@ -1,105 +1,3 @@
-// "use client"
-
-// import { Input } from "@/components/ui/input"
-// import { Button } from "@/components/ui/button"
-// import Image from "next/image"
-// export default function Home() {
-//   const validateEmail = (email: string) => {
-//     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-//     return regex.test(email)
-//   }
-
-//    const [error, submitAction, isPending] = useActionState(
-//     async (_: unknown, formData: FormData) => {
-//       const email = formData.get('email') as string;
-//       const firstName = formData.get('firstName') as string;
-
-//       if (!firstName) {
-//         return {
-//           email: "",
-//           firstName: "Please enter a valid name"
-//         }
-//       }
-
-//       if (!validateEmail(email)) {
-//         return {
-//           email: "Please enter a valid email",
-//           firstName: ""
-//         }
-//       }
-      
-
-//       const {error} = await fetch("/api/send", {
-//         method: "POST",
-//         body: JSON.stringify({ email, firstName })
-//       }).then(res => res.json())
-
-//       if (error) {
-//         return {
-//           email: "",
-//           firstName: "",
-//           apiMessage: "Sorry! We couldn't subscribe you at the moment.",
-//           apiError: true
-//         }
-//       }
-
-//       return {
-//         email: "",
-//         firstName: "",
-//         apiMessage: "Thank you! Please confirm your email by clicking the confirmation link. :)",
-//         apiError: false
-//       };
-//     },
-//     null,
-//   );
-
-//   return (
-//     <div className="min-h-screen bg-black text-white">
-//       <div className="mx-auto max-w-4xl px-4 py-8 text-center">
-//         <Image src="/logo.png" className="mx-auto w-80" width={500} height={500} alt="state wizard logo" />
-//         <p className="mb-4 text-lg text-gray-400">
-//          Cansado de lidar com estados complexos do jeito tradicional? As state machines vão mudar o jogo, trazendo mais clareza, previsibilidade e estabilidade para suas aplicações!
-//         </p>
-//         <p className="mb-12 text-lg text-gray-400">
-//           O State Wizard é um curso gratuito por e-mail, projetado para te ensinar, de forma prática e eficiente, como lidar com estados complexos de forma simples e eficiente. 🚀<br />Não enviaremos spam.
-//         </p>
-
-//       {error?.apiMessage 
-//         ? <p className={`mt-2 mx-auto text-center text-sm ${error?.apiError ? 'text-red-400' : 'text-emerald-400'}`}>{error.apiMessage}</p>
-//         : (
-//             <form action={submitAction} className="mx-auto max-w-md space-y-4">
-//               <div className="relative">
-//                 <Input
-//                   type="text"
-//                   placeholder="Nome"
-//                   name="firstName"
-//                   className="h-12 bg-gray-800/50 text-white placeholder:text-gray-400"
-//                 />
-//                 {error?.firstName && <p className="mt-2 text-left text-sm text-red-400">{error.firstName}</p>}
-//               </div>
-//               <div className="relative">
-//                 <Input
-//                   type="email"
-//                   placeholder="E-mail"
-//                   name="email"
-//                   className="h-12 bg-gray-800/50 text-white placeholder:text-gray-400"
-//                 />
-//                 {error?.email && <p className="mt-2 text-left text-sm text-red-400">{error.email}</p>}
-//               </div>
-//               <Button
-//                 type="submit"
-//                 className="h-12 w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:opacity-90"
-//                 disabled={isPending}
-//               >
-//                 {isPending ? "Salvando..." : "Quero receber o curso via email"}
-//               </Button>
-//             </form>
-//           )}
-//       </div>
-//     </div>
-//   )
-// }
-
 'use client'
 
 import { useActionState } from "react"
@@ -177,17 +75,22 @@ export default function Home() {
                 QA engineer agent at your fingertips
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Effortlessly create end-to-end tests using simple prompts. Deploy tests anytime, anywhere—locally, in
-                CI, or with our cloud service.
+                Effortlessly create an AI agent to test your product. Deploy anywhere, run locally, integrate with your CI, or use our cloud service.
               </p>
-              <form action={submitAction} className="flex flex-col sm:flex-row gap-4 min-w-[380px] justify-center">
-                <div className="flex-1">
-                  <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
-                </div>
-                <Button className="px-8" type="submit" disabled={isPending}>
-                  {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
-                </Button>
-              </form>
+              {actionResult?.apiError === false ? (
+                <p className="text-emerald-500 text-lg font-semibold py-8">Thank you for subscribing! You will be notified when we launch.</p>
+              ) : actionResult?.apiError ? (
+                <p className="text-red-500 text-lg font-semibold py-8">{actionResult.apiMessage}</p>
+              ) : (
+                <form action={submitAction} className="flex flex-col sm:flex-row gap-4 min-w-[380px] justify-center">
+                  <div className="flex-1">
+                    <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
+                  </div>
+                  <Button className="px-8" type="submit" disabled={isPending}>
+                    {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
+                  </Button>
+                </form>
+              )}
               <p className="text-xs text-muted-foreground">Get notified when we launch. No spam, just updates.</p>
             </div>
           </div>
@@ -208,7 +111,7 @@ export default function Home() {
                 </Badge>
                 <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Rentless bug finder</h2>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our framework transforms how you approach end-to-end testing with AI-powered simplicity.
+                  The framework that transforms how you approach end-to-end testing with AI-powered simplicity.
                 </p>
               </div>
             </div>
@@ -266,14 +169,20 @@ export default function Home() {
                   Be among the first to experience the future of E2E testing. Early access members receive exclusive
                   benefits and pricing.
                 </p>
-                <form action={submitAction} className="flex flex-col sm:flex-row gap-4 max-w-md">
-                  <div className="flex-1">
-                    <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
-                  </div>
-                  <Button className="px-8" type="submit" disabled={isPending}>
-                    {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
-                  </Button>
-                </form>
+                {actionResult?.apiError === false ? (
+                  <p className="text-emerald-500 text-lg font-semibold py-8">Thank you for subscribing! You will be notified when we launch.</p>
+                ) : actionResult?.apiError ? (
+                  <p className="text-red-500 text-lg font-semibold py-8">{actionResult.apiMessage}</p>
+                ) : (
+                  <form action={submitAction} className="flex flex-col sm:flex-row gap-4 max-w-md">
+                    <div className="flex-1">
+                      <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
+                    </div>
+                    <Button className="px-8" type="submit" disabled={isPending}>
+                      {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
+                    </Button>
+                  </form>
+                )}
               </div>
               <div className="flex flex-col justify-center space-y-4">
                 <ul className="grid gap-3">
