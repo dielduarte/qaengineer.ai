@@ -3,13 +3,31 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Suspense } from "react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 function TodoListApp() {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
   const [todos, setTodos] = useState<{ id: number; text: string }[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingValue, setEditingValue] = useState("");
+
+  useEffect(() => {
+    if (email) {
+      const savedTodos = localStorage.getItem(`todos-${email}`);
+      if (savedTodos) {
+        setTodos(JSON.parse(savedTodos));
+      }
+    }
+  }, [email]);
+
+  useEffect(() => {
+    if (email) {
+      localStorage.setItem(`todos-${email}`, JSON.stringify(todos));
+    }
+  }, [todos, email]);
 
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,8 +45,12 @@ function TodoListApp() {
     setEditingValue(text);
   };
 
-  const handleEditSave = () => {
-    // setTodos(todos.map(todo => todo.id === id ? { ...todo, text: editingValue } : todo))
+  const handleEditSave = (id: number) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, text: editingValue } : todo
+      )
+    );
     setEditingId(null);
     setEditingValue("");
   };
@@ -40,6 +62,11 @@ function TodoListApp() {
 
   return (
     <div className="w-full max-w-md mx-auto">
+      {email && (
+        <div className="mb-4 text-sm text-muted-foreground">
+          Logged in as: {email}
+        </div>
+      )}
       <form onSubmit={handleAdd} className="flex gap-2 mb-6">
         <Input
           value={newTodo}
@@ -65,7 +92,7 @@ function TodoListApp() {
                 />
                 <Button
                   size="sm"
-                  onClick={() => handleEditSave()}
+                  onClick={() => handleEditSave(todo.id)}
                   className="px-2"
                 >
                   Save
