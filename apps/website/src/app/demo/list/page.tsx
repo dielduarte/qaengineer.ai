@@ -4,24 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Suspense } from "react";
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 function TodoListApp() {
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
+  const [email, setEmail] = useState<string | null>(null);
   const [todos, setTodos] = useState<{ id: number; text: string }[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingValue, setEditingValue] = useState("");
 
   useEffect(() => {
-    if (email) {
-      const savedTodos = localStorage.getItem(`todos-${email}`);
+    const storedEmail = localStorage.getItem("demoEmail");
+    if (storedEmail) {
+      setEmail(storedEmail);
+      const savedTodos = localStorage.getItem(`todos-${storedEmail}`);
       if (savedTodos) {
         setTodos(JSON.parse(savedTodos));
       }
     }
-  }, [email]);
+  }, []);
 
   useEffect(() => {
     if (email) {

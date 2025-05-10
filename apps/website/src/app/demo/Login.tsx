@@ -15,7 +15,8 @@ export function Login() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (emailPattern.test(email) && password.trim() !== "") {
-      router.push(`/demo/list?email=${encodeURIComponent(email)}`);
+      localStorage.setItem("demoEmail", email);
+      router.push("/demo/list");
     }
   };
 
