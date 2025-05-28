@@ -2,11 +2,18 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { generateText, ToolSet, tool as aiTool } from "ai";
 import { createAnthropic } from "@ai-sdk/anthropic";
-import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
-import {readdirGlob} from 'readdir-glob'
-import fs from 'node:fs'
+import { JSONSchemaToZod } from "@dmitryrechkin/json-schema-to-zod";
+import { readdirGlob } from "readdir-glob";
+import fs from "node:fs";
 
-export function createMCPClient({ apiKey }: {apiKey: string}) {
+export type MCPClient = {
+  connectToServer: () => Promise<void>;
+  processQueryWithAiSDK: (query: string) => Promise<string>;
+  cleanup: () => Promise<void>;
+  readFiles: () => Promise<string[]>;
+};
+
+export function createMCPClient({ apiKey }: { apiKey: string }) {
   let mcp: Client;
   let transport: SSEClientTransport | null = null;
   let toolSet: ToolSet = {};
@@ -17,9 +24,9 @@ export function createMCPClient({ apiKey }: {apiKey: string}) {
       mcp = new Client({ name: "qaengineer.ai", version: "1.0.0" });
 
       await mcp.connect(transport);
-      
+
       const toolsResult = await mcp.listTools();
-  
+
       toolSet = toolsResult.tools.reduce((acc: any, tool: any) => {
         acc[tool.name] = aiTool({
           description: tool.description,
@@ -35,7 +42,6 @@ export function createMCPClient({ apiKey }: {apiKey: string}) {
         return acc;
       }, {} as ToolSet);
     } catch (e) {
-      console.log("Failed to connect to MCP server: ", e);
       throw e;
     }
   }
@@ -53,27 +59,26 @@ export function createMCPClient({ apiKey }: {apiKey: string}) {
     return result.text;
   }
 
-
   async function cleanup() {
     await mcp.close();
   }
 
   async function readFiles(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      const globber = readdirGlob('.qaengineer/', { pattern: '**/*.md' });
+      const globber = readdirGlob(".qaengineer/", { pattern: "**/*.md" });
       const files: string[] = [];
-      
-      globber.on('match', (match: any) => {
-        const file = fs.readFileSync(match.absolute, 'utf8');
+
+      globber.on("match", (match: any) => {
+        const file = fs.readFileSync(match.absolute, "utf8");
         files.push(file);
       });
 
-      globber.on('error', (err: any) => {
-        console.error('fatal error', err);
+      globber.on("error", (err: any) => {
+        console.error("fatal error", err);
         reject(err);
       });
-      
-      globber.on('end', () => {
+
+      globber.on("end", () => {
         resolve(files);
       });
     });
