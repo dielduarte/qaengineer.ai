@@ -7,8 +7,11 @@ export async function POST(req: Request) {
   try {
     const { email } = await req.json();
 
-    if(!process.env.RESEND_AUDIENCE_ID) {
-      return Response.json({ error: 'RESEND_AUDIENCE_ID is not set' }, { status: 500 });
+    if (!process.env.RESEND_AUDIENCE_ID) {
+      return Response.json(
+        { error: 'RESEND_AUDIENCE_ID is not set' },
+        { status: 500 },
+      );
     }
 
     const { data, error } = await resend.contacts.create({
@@ -22,13 +25,13 @@ export async function POST(req: Request) {
       return Response.json({ error }, { status: 500 });
     }
 
-    if(data) {
+    if (data) {
       await resend.emails.send({
         from: 'Qaengineer.ai <thankyou@qaengineer.ai>',
         to: [email],
         subject: 'Qaengineer.ai - confirm your email',
         react: EmailTemplate({ userId: data.id }),
-      })
+      });
     }
 
     return Response.json(data);

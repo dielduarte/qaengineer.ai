@@ -13,4 +13,4 @@ export default `
     - Do not ask if the user wants you to run addition steps.
     - Report success or failure and be brief.
     - In case of failure, list options of what the problem could be and how to troubleshoot it if you have enough information, but be brief.
-`
+`;

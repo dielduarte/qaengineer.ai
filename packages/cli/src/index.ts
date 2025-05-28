@@ -7,16 +7,21 @@ interface CommandArgs {
 }
 
 yargs(hideBin(process.argv))
-  .command<CommandArgs>('run', 'Execute the tests', () => {}, async (argv) => {
-    const {run} = await import('./commands/run.js');
+  .command<CommandArgs>(
+    'run',
+    'Execute the tests',
+    () => {},
+    async (argv) => {
+      const { run } = await import('./commands/run.js');
 
-    run({
-      apiKey: argv['model-api-key']
-    });   
-  })
+      run({
+        apiKey: argv['model-api-key'],
+      });
+    },
+  )
   .option('model-api-key', {
     type: 'string',
     description: 'The API key for the model',
     demandOption: true,
   })
-  .parse()
+  .parse();

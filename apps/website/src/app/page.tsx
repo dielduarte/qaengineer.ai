@@ -1,50 +1,49 @@
-'use client'
+'use client';
 
-import { useActionState } from "react"
+import { useActionState } from 'react';
 
-import { ArrowRight, CheckCircle } from "lucide-react"
+import { ArrowRight, CheckCircle } from 'lucide-react';
 
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import VideoHero from "@/components/video-hero"
-import FeatureCard from "@/components/feature-card"
-import { Badge } from "@/components/ui/badge"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import VideoHero from '@/components/video-hero';
+import FeatureCard from '@/components/feature-card';
+import { Badge } from '@/components/ui/badge';
 
 export default function Home() {
   const validateEmail = (email: string) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return regex.test(email)
-  }
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
-   const [actionResult, submitAction, isPending] = useActionState(
+  const [actionResult, submitAction, isPending] = useActionState(
     async (_: unknown, formData: FormData) => {
       const email = formData.get('email') as string;
 
-
       if (!validateEmail(email)) {
         return {
-          email: "Please enter a valid email",
-        }
+          email: 'Please enter a valid email',
+        };
       }
-      
 
-      const {error} = await fetch("/api/send", {
-        method: "POST",
-        body: JSON.stringify({ email })
-      }).then(res => res.json())
+      const { error } = await fetch('/api/send', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      }).then((res) => res.json());
 
       if (error) {
         return {
-          email: "",
+          email: '',
           apiMessage: "Sorry! We couldn't subscribe you at the moment.",
-          apiError: true
-        }
+          apiError: true,
+        };
       }
 
       return {
-        email: "",
-        apiMessage: "Thank you! Please confirm your email by clicking the confirmation link. :)",
-        apiError: false
+        email: '',
+        apiMessage:
+          'Thank you! Please confirm your email by clicking the confirmation link. :)',
+        apiError: false,
       };
     },
     null,
@@ -58,7 +57,10 @@ export default function Home() {
             <div className="font-bold text-xl">Qaengineer.ai</div>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+            <a
+              href="#features"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+            >
               Features
             </a>
           </nav>
@@ -75,23 +77,41 @@ export default function Home() {
                 QA engineer agent at your fingertips
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Effortlessly create an AI agent to test your product. Deploy anywhere, run locally, integrate with your CI, or use our cloud service.
+                Effortlessly create an AI agent to test your product. Deploy
+                anywhere, run locally, integrate with your CI, or use our cloud
+                service.
               </p>
               {actionResult?.apiError === false ? (
-                <p className="text-emerald-500 text-lg font-semibold py-8">Thank you for subscribing! You will be notified when we launch.</p>
+                <p className="text-emerald-500 text-lg font-semibold py-8">
+                  Thank you for subscribing! You will be notified when we
+                  launch.
+                </p>
               ) : actionResult?.apiError ? (
-                <p className="text-red-500 text-lg font-semibold py-8">{actionResult.apiMessage}</p>
+                <p className="text-red-500 text-lg font-semibold py-8">
+                  {actionResult.apiMessage}
+                </p>
               ) : (
-                <form action={submitAction} className="flex flex-col sm:flex-row gap-4 min-w-[380px] justify-center">
+                <form
+                  action={submitAction}
+                  className="flex flex-col sm:flex-row gap-4 min-w-[380px] justify-center"
+                >
                   <div className="flex-1">
-                    <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
+                    <Input
+                      type="email"
+                      placeholder="Enter your email"
+                      className="w-full"
+                      name="email"
+                    />
                   </div>
                   <Button className="px-8" type="submit" disabled={isPending}>
-                    {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
+                    {isPending ? 'Subscribing...' : 'Subscribe'}{' '}
+                    {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
                   </Button>
                 </form>
               )}
-              <p className="text-xs text-muted-foreground">Get notified when we launch. No spam, just updates.</p>
+              <p className="text-xs text-muted-foreground">
+                Get notified when we launch. No spam, just updates.
+              </p>
             </div>
           </div>
         </section>
@@ -109,9 +129,12 @@ export default function Home() {
                 <Badge variant="outline" className="px-3 py-1">
                   Features
                 </Badge>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Rentless bug finder</h2>
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
+                  Rentless bug finder
+                </h2>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  The framework that transforms how you approach end-to-end testing with AI-powered simplicity.
+                  The framework that transforms how you approach end-to-end
+                  testing with AI-powered simplicity.
                 </p>
               </div>
             </div>
@@ -164,22 +187,38 @@ export default function Home() {
                 <Badge variant="outline" className="px-3 py-1">
                   Early Access
                 </Badge>
-                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Join the waitlist today</h2>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                  Join the waitlist today
+                </h2>
                 <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed">
-                  Be among the first to experience the future of E2E testing. Early access members receive exclusive
-                  benefits and pricing.
+                  Be among the first to experience the future of E2E testing.
+                  Early access members receive exclusive benefits and pricing.
                 </p>
                 {actionResult?.apiError === false ? (
-                  <p className="text-emerald-500 text-lg font-semibold py-8">Thank you for subscribing! You will be notified when we launch.</p>
+                  <p className="text-emerald-500 text-lg font-semibold py-8">
+                    Thank you for subscribing! You will be notified when we
+                    launch.
+                  </p>
                 ) : actionResult?.apiError ? (
-                  <p className="text-red-500 text-lg font-semibold py-8">{actionResult.apiMessage}</p>
+                  <p className="text-red-500 text-lg font-semibold py-8">
+                    {actionResult.apiMessage}
+                  </p>
                 ) : (
-                  <form action={submitAction} className="flex flex-col sm:flex-row gap-4 max-w-md">
+                  <form
+                    action={submitAction}
+                    className="flex flex-col sm:flex-row gap-4 max-w-md"
+                  >
                     <div className="flex-1">
-                      <Input type="email" placeholder="Enter your email" className="w-full" name="email" />
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="w-full"
+                        name="email"
+                      />
                     </div>
                     <Button className="px-8" type="submit" disabled={isPending}>
-                      {isPending ? "Subscribing..." : "Subscribe"} {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
+                      {isPending ? 'Subscribing...' : 'Subscribe'}{' '}
+                      {!isPending && <ArrowRight className="ml-2 h-4 w-4" />}
                     </Button>
                   </form>
                 )}
@@ -213,11 +252,12 @@ export default function Home() {
           <div className="flex flex-col items-center gap-4 md:items-start md:gap-2">
             <div className="font-bold text-xl">qaengineer.ai</div>
             <p className="text-center text-sm text-muted-foreground md:text-left">
-              &copy; {new Date().getFullYear()} qaengineer.ai. All rights reserved.
+              &copy; {new Date().getFullYear()} qaengineer.ai. All rights
+              reserved.
             </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

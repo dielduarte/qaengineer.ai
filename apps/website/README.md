@@ -4,7 +4,6 @@ This is a simple waiting list landing page template, using Next.js and Resend AP
 
 ![Landing page screenshot](docs/assets/landing-page.png)
 
-
 ## Getting started
 
 1. Clone the repository
