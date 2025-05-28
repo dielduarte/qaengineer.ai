@@ -24,16 +24,14 @@ const EmailTemplate = ({ userId }: { userId: string }) => {
               <Heading className="text-3xl text-black m-0 mb-4">
                 Confirm your email
               </Heading>
-              
-              <Text className="text-gray-600 m-0 mb-4">
-                Hey, 👋
-              </Text>
+
+              <Text className="text-gray-600 m-0 mb-4">Hey, 👋</Text>
 
               <Text className="text-gray-600 m-0 mb-4">
                 Please confirm your email by clicking the link below.
               </Text>
 
-              <Button 
+              <Button
                 href={`https://qaengineer.ai/subscribe?id=${userId}`}
                 className="box-border bg-black text-white px-6 py-3 rounded-lg text-center w-full"
               >

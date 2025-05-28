@@ -1,15 +1,15 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { Play } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { Play } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function VideoHero() {
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const handlePlayVideo = () => {
-    setIsPlaying(true)
-  }
+    setIsPlaying(true);
+  };
 
   return (
     <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-xl border bg-muted/20">
@@ -27,7 +27,12 @@ export default function VideoHero() {
       ) : null}
 
       {isPlaying ? (
-        <video className="h-full w-full" controls autoPlay src="/demo-video.mp4">
+        <video
+          className="h-full w-full"
+          controls
+          autoPlay
+          src="/demo-video.mp4"
+        >
           Your browser does not support the video tag.
         </video>
       ) : (
@@ -40,5 +45,5 @@ export default function VideoHero() {
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Suspense } from "react";
-import React, { useState } from "react";
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Suspense } from 'react';
+import React, { useState } from 'react';
 
 function TodoListApp() {
   const [todos, setTodos] = useState<{ id: number; text: string }[]>([]);
-  const [newTodo, setNewTodo] = useState("");
+  const [newTodo, setNewTodo] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [editingValue, setEditingValue] = useState("");
+  const [editingValue, setEditingValue] = useState('');
 
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newTodo.trim()) return;
     setTodos([...todos, { id: Date.now(), text: newTodo }]);
-    setNewTodo("");
+    setNewTodo('');
   };
 
   const handleRemove = (id: number) => {
@@ -30,12 +30,12 @@ function TodoListApp() {
   const handleEditSave = () => {
     // setTodos(todos.map(todo => todo.id === id ? { ...todo, text: editingValue } : todo))
     setEditingId(null);
-    setEditingValue("");
+    setEditingValue('');
   };
 
   const handleEditCancel = () => {
     setEditingId(null);
-    setEditingValue("");
+    setEditingValue('');
   };
 
   return (

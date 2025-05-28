@@ -1,22 +1,22 @@
-"use client"
+'use client';
 
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { Suspense, useEffect } from "react"
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
 function Subscribe() {
-  const searchParams = useSearchParams()
- 
-  const id = searchParams.get('id')
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get('id');
 
   useEffect(() => {
-    if(id) {
+    if (id) {
       fetch('/api/confirm', {
         method: 'POST',
         body: JSON.stringify({ id }),
-      })
+      });
     }
-  }, [id])
+  }, [id]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -27,7 +27,7 @@ function Subscribe() {
           </div>
         </div>
       </header>
-        <main className="flex-1">
+      <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-b from-background to-background/90">
           <div className="container px-4 md:px-6 m-auto">
             <div className="flex flex-col items-center space-y-4 text-center">
@@ -43,13 +43,12 @@ function Subscribe() {
         </section>
       </main>
     </div>
-  )
+  );
 }
 export default function SubscribePage() {
   return (
     <Suspense>
       <Subscribe />
     </Suspense>
-  )
+  );
 }
-
