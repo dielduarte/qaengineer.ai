@@ -15,11 +15,9 @@ the init command will install and create a `.qaengineer` folder for you at the p
 You can run the executable or add a npm script to execute your tests
 
 ```json
- {
+{
   "scripts": {
     "qa": "@qaengineer run --model-api-key={your_key}"
   }
- }
-``
-
+}
 ```
