@@ -12,7 +12,8 @@
     "start": "turbo run start",
     "lint": "turbo run lint",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "init": "@qaengineer run"
   },
   "devDependencies": {
     "husky": "^9.1.7",
