@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import type { MCPClientOptions } from './mcp/client.js';
 
-interface CommandArgs {
-  'model-api-key': string;
-}
+interface CommandArgs extends MCPClientOptions {}
 
 yargs(hideBin(process.argv))
   .command<CommandArgs>(
@@ -14,14 +13,22 @@ yargs(hideBin(process.argv))
     async (argv) => {
       const { run } = await import('./commands/run.js');
 
-      run({
-        apiKey: argv['model-api-key'],
-      });
+      run(argv);
     },
   )
-  .option('model-api-key', {
+  .option('apiKey', {
     type: 'string',
     description: 'The API key for the model',
+    demandOption: true,
+  })
+  .option('provider', {
+    type: 'string',
+    description: 'The provider to use',
+    demandOption: true,
+  })
+  .option('model', {
+    type: 'string',
+    description: "The provider's model to use",
     demandOption: true,
   })
   .parse();

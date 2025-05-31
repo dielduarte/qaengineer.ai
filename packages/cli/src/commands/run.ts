@@ -1,10 +1,9 @@
 import { log } from '@clack/prompts';
-import { createMCPClient, MCPClient } from '../mcp/client.js';
+import { createMCPClient, MCPClientOptions } from '../mcp/client.js';
 import { withVariables } from '../prompts/index.js';
 import runningAndReportingTests from '../prompts/running-and-reporting-tests.js';
-import { ChildProcess } from 'child_process';
 
-export async function run({ apiKey }: { apiKey: string }) {
+export async function run(options: MCPClientOptions) {
   log.info('Starting Playwright MCP server...');
   const { spawn } = await import('child_process');
 
@@ -16,7 +15,7 @@ export async function run({ apiKey }: { apiKey: string }) {
     'playwright-output',
   ]);
 
-  const mcpClient = createMCPClient({ apiKey });
+  const mcpClient = await createMCPClient(options);
 
   await new Promise((resolve) => {
     mcpServer.stderr.on('data', async (data) => {
