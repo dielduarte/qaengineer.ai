@@ -5,6 +5,10 @@ import type { MCPClientOptions } from './mcp/client.js';
 
 interface CommandArgs extends MCPClientOptions {}
 
+interface InitCommandArgs {
+  'skip-install': boolean;
+}
+
 yargs(hideBin(process.argv))
   .command<CommandArgs>(
     'run',
@@ -33,7 +37,7 @@ yargs(hideBin(process.argv))
       run(argv);
     },
   )
-  .command<CommandArgs>(
+  .command<InitCommandArgs>(
     'init',
     'Initialize the project structure',
     (yargs) => {
