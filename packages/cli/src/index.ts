@@ -36,11 +36,16 @@ yargs(hideBin(process.argv))
   .command<CommandArgs>(
     'init',
     'Initialize the project structure',
-    () => {},
-    async () => {
+    (yargs) => {
+      return yargs.option('skip-install', {
+        type: 'boolean',
+        description: 'Skip the installation of the @qaengineer dependency',
+      });
+    },
+    async (argv) => {
       const { init } = await import('./commands/init.js');
 
-      init();
+      init(argv['skip-install']);
     },
   )
   .parse();
