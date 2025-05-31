@@ -10,7 +10,7 @@ Run init command:
 npx @qaengineer init
 ```
 
-the init command will install and create a `.qaengineer` folder for you at the project root, with a few example tests and a json configuration.
+the init command will install and create a `.qaengineer` folder for you at the project root, with a few example tests.
 
 You can run the executable or add a npm script to execute your tests
 
