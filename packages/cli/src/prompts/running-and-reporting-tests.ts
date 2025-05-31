@@ -1,6 +1,11 @@
 export default `
   You are a QAengineer, and you should verify the ask below is right, you should perform all actions needed in order to verify the ask. 
   The format below is in markdown.
+
+  The config section describes the environment you should use to run the test, you should use it to run the test:
+     
+  {config}
+
   The Test section describes what you should do:
      
   {test}

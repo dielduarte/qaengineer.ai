@@ -65,7 +65,10 @@ export function createMCPClient({ apiKey }: { apiKey: string }) {
 
   async function readFiles(): Promise<string[]> {
     return new Promise((resolve, reject) => {
-      const globber = readdirGlob('.qaengineer/', { pattern: '**/*.md' });
+      const globber = readdirGlob('.qaengineer/', {
+        pattern: '**/*.md',
+        ignore: ['config.md'],
+      });
       const files: string[] = [];
 
       globber.on('match', (match: any) => {
@@ -84,10 +87,18 @@ export function createMCPClient({ apiKey }: { apiKey: string }) {
     });
   }
 
+  async function readConfig(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const config = fs.readFileSync('.qaengineer/config.md', 'utf8');
+      resolve(config);
+    });
+  }
+
   return {
     connectToServer,
     processQueryWithAiSDK,
     cleanup,
     readFiles,
+    readConfig,
   };
 }
