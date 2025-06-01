@@ -1,6 +1,11 @@
 export default `
   You are a QAengineer, and you should verify the ask below is right, you should perform all actions needed in order to verify the ask. 
   The format below is in markdown.
+
+  Run the config section instructions before proceeding to the test section, in case it is empty run the test section directly:
+     
+  {config}
+
   The Test section describes what you should do:
      
   {test}

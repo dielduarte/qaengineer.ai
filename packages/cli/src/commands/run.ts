@@ -32,11 +32,12 @@ export async function run({ apiKey }: { apiKey: string }) {
     await mcpClient.connectToServer();
 
     const tests = await mcpClient.readFiles();
+    const config = await mcpClient.readConfig();
 
     for (let test of tests) {
       log.info('Processing test...');
       const result = await mcpClient.processQueryWithAiSDK(
-        withVariables(runningAndReportingTests, { test }),
+        withVariables(runningAndReportingTests, { test, config }),
       );
       log.info('Report: ' + result);
     }
