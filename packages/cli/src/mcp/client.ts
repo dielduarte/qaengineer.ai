@@ -89,7 +89,13 @@ export function createMCPClient({ apiKey }: { apiKey: string }) {
 
   async function readConfig(): Promise<string> {
     return new Promise((resolve, reject) => {
-      const config = fs.readFileSync('.qaengineer/config.md', 'utf8');
+      let config = '';
+      try {
+        config = fs.readFileSync('.qaengineer/config.md', 'utf8');
+      } catch (err) {
+        // Ignore if config file doesn't exist
+      }
+
       resolve(config);
     });
   }
