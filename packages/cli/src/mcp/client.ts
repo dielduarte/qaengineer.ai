@@ -1,10 +1,13 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
 import { generateText, ToolSet, tool as aiTool } from 'ai';
-import { createAnthropic } from '@ai-sdk/anthropic';
 import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
 import { readdirGlob } from 'readdir-glob';
 import fs from 'node:fs';
+
+import { providers } from './providers.js';
+
+type Provider = keyof typeof providers;
 
 export type MCPClient = {
   connectToServer: () => Promise<void>;
@@ -13,10 +16,31 @@ export type MCPClient = {
   readFiles: () => Promise<string[]>;
 };
 
-export function createMCPClient({ apiKey }: { apiKey: string }) {
+export type MCPClientOptions = {
+  apiKey: string;
+  provider: Provider;
+  model: string;
+};
+
+export async function createMCPClient({
+  apiKey,
+  provider,
+  model,
+}: MCPClientOptions) {
   let mcp: Client;
   let transport: SSEClientTransport | null = null;
   let toolSet: ToolSet = {};
+
+  if (!providers[provider]) {
+    throw new Error(`Provider ${provider} not supported`);
+  }
+
+  const providerInstance = await providers[provider]();
+  const modelInstance = providerInstance
+    .createProvider({
+      apiKey,
+    })
+    .languageModel(model);
 
   async function connectToServer() {
     try {
@@ -48,9 +72,7 @@ export function createMCPClient({ apiKey }: { apiKey: string }) {
 
   async function processQueryWithAiSDK(query: string) {
     const result = await generateText({
-      model: createAnthropic({
-        apiKey,
-      }).languageModel('claude-3-5-sonnet-20241022'),
+      model: modelInstance,
       prompt: query,
       maxSteps: 10,
       tools: toolSet,

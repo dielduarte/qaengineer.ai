@@ -17,7 +17,9 @@ You can run the executable or add a npm script to execute your tests
 ```json
 {
   "scripts": {
-    "qa": "@qaengineer run --model-api-key={your_key}"
+    "qa": "@qaengineer run --apiKey={your_key} --provider={your provider} --model={the model's name}"
   }
 }
 ```
+
+The QA engineer project uses AI sdk behind the scenes to communicate with providers and modules in an easier way. To check the list of providers and modules Qaengineer supports, please refer to the AI SDK's documentation: https://ai-sdk.dev/providers/ai-sdk-providers
