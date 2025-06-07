@@ -77,9 +77,10 @@ export default function Home() {
                 QA engineer agent at your fingertips
               </h1>
               <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
-                Effortlessly create an AI agent to test your product. Deploy
-                anywhere, run locally, integrate with your CI, or use our cloud
-                service.
+                Ship with confidence. Catch bugs before your users do with an
+                open-source framework that intelligently uses AI for testing. It
+                works wherever you work — locally, in your CI pipeline, or in
+                the cloud
               </p>
               {actionResult?.apiError === false ? (
                 <p className="text-emerald-500 text-lg font-semibold py-8">
@@ -110,7 +111,8 @@ export default function Home() {
                 </form>
               )}
               <p className="text-xs text-muted-foreground">
-                Get notified when we launch. No spam, just updates.
+                We are sending invites to our early access program. no spams,
+                just updates.
               </p>
             </div>
           </div>
@@ -133,8 +135,8 @@ export default function Home() {
                   Rentless bug finder
                 </h2>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  The framework that transforms how you approach end-to-end
-                  testing with AI-powered simplicity.
+                  The open-source framework that transforms how you approach
+                  end-to-end testing with AI-powered simplicity.
                 </p>
               </div>
             </div>
@@ -142,6 +144,16 @@ export default function Home() {
               <FeatureCard
                 title="Prompt-Based Test Creation"
                 description="Write end-to-end tests using natural language prompts. No complex syntax or boilerplate required."
+                icon={<CheckCircle className="h-10 w-10 text-primary" />}
+              />
+              <FeatureCard
+                title="Comprehensive Test Coverage"
+                description="Generate tests that cover edge cases and scenarios you might not have considered."
+                icon={<CheckCircle className="h-10 w-10 text-primary" />}
+              />
+              <FeatureCard
+                title="AI Assistant Mode"
+                description="Augment your QA team's capabilities with an AI assistant that handles repetitive tasks"
                 icon={<CheckCircle className="h-10 w-10 text-primary" />}
               />
               <FeatureCard
@@ -159,20 +171,10 @@ export default function Home() {
                 description="Seamlessly integrate with your CI/CD pipeline for automated testing on every commit."
                 icon={<CheckCircle className="h-10 w-10 text-primary" />}
               />
-              <FeatureCard
-                title="Managed Cloud Service"
-                description="Use our managed cloud service for hassle-free testing without infrastructure management."
-                icon={<CheckCircle className="h-10 w-10 text-primary" />}
-              />
-              <FeatureCard
-                title="Comprehensive Test Coverage"
-                description="Generate tests that cover edge cases and scenarios you might not have considered."
-                icon={<CheckCircle className="h-10 w-10 text-primary" />}
-              />
               <div className="lg:col-start-2 lg:col-end-3">
                 <FeatureCard
-                  title="AI Assistant Mode"
-                  description="Augment your QA team's capabilities with an AI assistant that handles repetitive tasks"
+                  title="Managed Cloud Service"
+                  description="Use our managed cloud service for hassle-free testing without infrastructure management."
                   icon={<CheckCircle className="h-10 w-10 text-primary" />}
                 />
               </div>
