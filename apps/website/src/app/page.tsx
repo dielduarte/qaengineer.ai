@@ -54,7 +54,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between m-auto">
           <div className="flex items-center gap-2">
-            <div className="font-bold text-xl">Qaengineer.ai</div>
+            <div className="font-bold text-xl pl-4">Qaengineer.ai</div>
           </div>
           <nav className="hidden md:flex gap-6">
             <a
@@ -94,7 +94,7 @@ export default function Home() {
               ) : (
                 <form
                   action={submitAction}
-                  className="flex flex-col sm:flex-row gap-4 min-w-[380px] justify-center"
+                  className="flex flex-col sm:flex-row gap-4 min-w-[260px] md:min-w-[380px] justify-center"
                 >
                   <div className="flex-1">
                     <Input
