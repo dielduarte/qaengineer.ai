@@ -24,7 +24,7 @@ export function Login() {
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between m-auto">
           <div className="flex items-center gap-2">
-            <div className="font-bold text-xl">Qaengineer.ai - TODO app</div>
+            <div className="font-bold text-xl">Qaengineer.ai - TODO APP</div>
           </div>
         </div>
       </header>
