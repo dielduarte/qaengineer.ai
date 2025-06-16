@@ -1,10 +1,13 @@
 {
-  "name": "qaengineer-cli",
-  "version": "0.1.0",
+  "name": "@qaengineer/cli",
+  "version": "0.0.1-beta.1",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "bin": {
     "@qaengineer": "dist/index.js"
   },
