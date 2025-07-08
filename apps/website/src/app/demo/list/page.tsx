@@ -28,7 +28,11 @@ function TodoListApp() {
   };
 
   const handleEditSave = () => {
-    // setTodos(todos.map(todo => todo.id === id ? { ...todo, text: editingValue } : todo))
+    setTodos(
+      todos.map((todo) =>
+        todo.id === editingId ? { ...todo, text: editingValue } : todo,
+      ),
+    );
     setEditingId(null);
     setEditingValue('');
   };

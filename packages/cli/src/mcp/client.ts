@@ -74,8 +74,9 @@ export async function createMCPClient({
     const result = await generateText({
       model: modelInstance,
       prompt: query,
-      maxSteps: 10,
+      maxSteps: 30,
       tools: toolSet,
+      maxRetries: 10,
     });
 
     return result.text;
