@@ -14,6 +14,7 @@ export type MCPClient = {
   processQueryWithAiSDK: (query: string) => Promise<string>;
   cleanup: () => Promise<void>;
   readFiles: () => Promise<string[]>;
+  readConfig: () => Promise<string>;
 };
 
 export type MCPClientOptions = {

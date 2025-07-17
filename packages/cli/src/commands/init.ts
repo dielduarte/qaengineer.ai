@@ -1,4 +1,4 @@
-import { intro, outro, log } from '@clack/prompts';
+import { intro, outro, log, spinner } from '@clack/prompts';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -89,20 +89,30 @@ function installDependencies(): boolean {
 
 export async function init(skipInstall: boolean) {
   intro('Welcome to QAengineer cli');
-  log.message('Initializing project scaffolding...');
+
+  const s = spinner();
+  s.start('Initializing project scaffolding...');
 
   const projectRoot = process.cwd();
 
+  s.message('Creating project directory...');
   const qaEngineerDir = createProjectDirectory(projectRoot);
 
-  if (!qaEngineerDir) return null;
+  if (!qaEngineerDir) {
+    s.stop('Failed to create project directory');
+    return null;
+  }
 
+  s.message('Creating configuration files...');
   createConfigurationFiles(qaEngineerDir);
+
+  s.message('Updating package.json...');
   updatePackageJson(projectRoot);
 
   if (!skipInstall) {
+    s.message('Installing dependencies...');
     installDependencies();
   }
 
-  log.success('Project scaffolding completed successfully!');
+  s.stop('Project scaffolding completed successfully!');
 }
