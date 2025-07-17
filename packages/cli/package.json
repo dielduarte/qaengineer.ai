@@ -1,11 +1,13 @@
 {
   "name": "@qaengineer/cli",
-  "version": "0.0.1-beta.1",
+  "version": "0.0.1-beta.3",
+  "description": "AI-powered end-to-end testing framework - CLI tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "bin": {
     "@qaengineer": "dist/index.js"
@@ -28,6 +30,27 @@
   "devDependencies": {
     "@types/yargs": "^17.0.33",
     "typescript": "^5.0.0"
+  },
+  "keywords": [
+    "qa",
+    "testing",
+    "e2e",
+    "ai",
+    "automation",
+    "playwright",
+    "cli",
+    "qaengineer"
+  ],
+  "author": "qaengineer.ai",
+  "license": "MIT",
+  "homepage": "https://qaengineer.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dielduarte/qaengineer.ai.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/dielduarte/qaengineer.ai/issues"
   },
   "publishConfig": {
     "access": "public"
