@@ -1,6 +1,11 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
-import { generateText, ToolSet, tool as aiTool } from 'ai';
+import {
+  generateText,
+  ToolSet,
+  tool as aiTool,
+  stepCountIs,
+} from 'ai';
 import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
 import { readdirGlob } from 'readdir-glob';
 import fs from 'node:fs';
@@ -45,27 +50,37 @@ export async function createMCPClient({
 
   async function connectToServer() {
     try {
-      transport = new SSEClientTransport(new URL('http://localhost:8931/sse'));
-      mcp = new Client({ name: 'qaengineer.ai', version: '1.0.0' });
+      transport = new SSEClientTransport(
+        new URL('http://localhost:8931/sse'),
+      );
+      mcp = new Client({
+        name: 'qaengineer.ai',
+        version: '1.0.0',
+      });
 
       await mcp.connect(transport);
 
       const toolsResult = await mcp.listTools();
 
-      toolSet = toolsResult.tools.reduce((acc: any, tool: any) => {
-        acc[tool.name] = aiTool({
-          description: tool.description,
-          parameters: JSONSchemaToZod.convert(tool.inputSchema as any) as any,
-          execute: async (args: any) => {
-            const result = await mcp.callTool({
-              name: tool.name,
-              arguments: args,
-            });
-            return result.content as string;
-          },
-        });
-        return acc;
-      }, {} as ToolSet);
+      toolSet = toolsResult.tools.reduce(
+        (acc: any, tool: any) => {
+          acc[tool.name] = aiTool({
+            description: tool.description,
+            inputSchema: JSONSchemaToZod.convert(
+              tool.inputSchema as any,
+            ) as any,
+            execute: async (args: any) => {
+              const result = await mcp.callTool({
+                name: tool.name,
+                arguments: args,
+              });
+              return result.content as string;
+            },
+          });
+          return acc;
+        },
+        {} as ToolSet,
+      );
     } catch (e) {
       throw e;
     }
@@ -75,7 +90,7 @@ export async function createMCPClient({
     const result = await generateText({
       model: modelInstance,
       prompt: query,
-      maxSteps: 30,
+      stopWhen: stepCountIs(30),
       tools: toolSet,
       maxRetries: 10,
     });
@@ -96,7 +111,10 @@ export async function createMCPClient({
       const files: string[] = [];
 
       globber.on('match', (match: any) => {
-        const file = fs.readFileSync(match.absolute, 'utf8');
+        const file = fs.readFileSync(
+          match.absolute,
+          'utf8',
+        );
         files.push(file);
       });
 
@@ -115,7 +133,10 @@ export async function createMCPClient({
     return new Promise((resolve, reject) => {
       let config = '';
       try {
-        config = fs.readFileSync('.qaengineer/config.md', 'utf8');
+        config = fs.readFileSync(
+          '.qaengineer/config.md',
+          'utf8',
+        );
       } catch (err) {
         // Ignore if config file doesn't exist
       }
