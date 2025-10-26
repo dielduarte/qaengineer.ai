@@ -2,8 +2,8 @@ import { readdirGlob } from 'readdir-glob';
 import type { Match } from 'readdir-glob';
 import fs from 'node:fs';
 import path from 'node:path';
-import { getConfig } from './config.js';
-import { FileReadError } from './errors.js';
+import { getConfig } from 'lib/config.js';
+import { FileReadError } from 'lib/errors.js';
 
 export async function readTestFiles(): Promise<string[]> {
   const config = getConfig();

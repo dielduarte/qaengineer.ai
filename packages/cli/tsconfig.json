@@ -9,7 +9,14 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "baseUrl": "src",
+    "paths": {
+      "commands/*": ["commands/*"],
+      "lib/*": ["lib/*"],
+      "mcp/*": ["mcp/*"],
+      "prompts/*": ["prompts/*"]
+    }
   },
   "include": ["src"]
 }

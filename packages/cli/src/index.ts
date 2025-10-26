@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import type { MCPClientOptions } from './mcp/client.js';
-import { formatError } from './lib/errors.js';
+import type { MCPClientOptions } from 'mcp/client.js';
+import { formatError } from 'lib/errors.js';
 
 interface CommandArgs extends MCPClientOptions {}
 
@@ -33,7 +33,7 @@ yargs(hideBin(process.argv))
         });
     },
     async (argv) => {
-      const { run } = await import('./commands/run.js');
+      const { run } = await import('commands/run.js');
       const result = await run(argv);
 
       if (!result.success) {
@@ -61,7 +61,7 @@ yargs(hideBin(process.argv))
       });
     },
     async (argv) => {
-      const { init } = await import('./commands/init.js');
+      const { init } = await import('commands/init.js');
       const result = await init(argv['skip-install']);
 
       if (!result.success) {

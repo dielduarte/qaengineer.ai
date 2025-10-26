@@ -2,8 +2,8 @@ import { intro, outro, log, spinner } from '@clack/prompts';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
-import type { InitResult } from '../lib/types.js';
-import { ConfigurationError } from '../lib/errors.js';
+import type { InitResult } from 'lib/types.js';
+import { ConfigurationError } from 'lib/errors.js';
 
 const QAENGINEER_DIR = '.qaengineer';
 const CONFIG_FILE_NAME = 'config.md';

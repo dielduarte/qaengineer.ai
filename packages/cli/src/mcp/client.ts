@@ -13,9 +13,9 @@ import {
   createGrepAndSearchFileTool,
 } from 'ctx-zip';
 
-import { providers } from './providers.js';
-import { getConfig } from '../lib/config.js';
-import { MCPConnectionError } from '../lib/errors.js';
+import { providers } from 'mcp/providers.js';
+import { getConfig } from 'lib/config.js';
+import { MCPConnectionError } from 'lib/errors.js';
 
 type Provider = keyof typeof providers;
 

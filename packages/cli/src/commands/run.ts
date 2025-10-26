@@ -3,19 +3,19 @@ import type { ChildProcess } from 'child_process';
 import {
   createMCPClient,
   MCPClientOptions,
-} from '../mcp/client.js';
-import { withVariables } from '../prompts/index.js';
-import runningAndReportingTests from '../prompts/running-and-reporting-tests.js';
+} from 'mcp/client.js';
+import { withVariables } from 'prompts/index.js';
+import runningAndReportingTests from 'prompts/running-and-reporting-tests.js';
 import {
   readTestFiles,
   readConfigFile,
-} from '../lib/files.js';
-import { getConfig } from '../lib/config.js';
+} from 'lib/files.js';
+import { getConfig } from 'lib/config.js';
 import type {
   TestRunResult,
   TestResult,
-} from '../lib/types.js';
-import { formatError } from '../lib/errors.js';
+} from 'lib/types.js';
+import { formatError } from 'lib/errors.js';
 
 export async function run(
   options: MCPClientOptions,
