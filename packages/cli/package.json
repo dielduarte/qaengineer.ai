@@ -1,6 +1,6 @@
 {
   "name": "@qaengineer/cli",
-  "version": "0.0.1-beta.3",
+  "version": "0.1.0",
   "description": "AI-powered end-to-end testing framework - CLI tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
