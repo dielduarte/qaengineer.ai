@@ -1,6 +1,6 @@
 {
   "name": "@qaengineer/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "AI-powered end-to-end testing framework - CLI tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,7 +13,7 @@
     "@qaengineer": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "dev": "tsc --watch",
     "start": "node dist/index.js"
   },
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@types/yargs": "^17.0.33",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.0.0"
   },
   "keywords": [
