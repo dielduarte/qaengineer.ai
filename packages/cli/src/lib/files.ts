@@ -1,23 +1,47 @@
 import { readdirGlob } from 'readdir-glob';
 import type { Match } from 'readdir-glob';
 import fs from 'node:fs';
+import path from 'node:path';
+import { getConfig } from './config.js';
+import { FileReadError } from './errors.js';
 
 export async function readTestFiles(): Promise<string[]> {
+  const config = getConfig();
   return new Promise((resolve, reject) => {
-    const globber = readdirGlob('.qaengineer/', {
-      pattern: '**/*.md',
-      ignore: ['config.md'],
+    const globber = readdirGlob(config.test.directory, {
+      pattern: config.test.pattern,
+      ignore: config.test.ignorePatterns,
     });
     const files: string[] = [];
 
     globber.on('match', (match: Match) => {
-      const file = fs.readFileSync(match.absolute, 'utf8');
-      files.push(file);
+      try {
+        const file = fs.readFileSync(
+          match.absolute,
+          'utf8',
+        );
+        files.push(file);
+      } catch (error) {
+        reject(
+          new FileReadError(
+            `Failed to read test file`,
+            match.absolute,
+            error instanceof Error
+              ? error
+              : new Error(String(error)),
+          ),
+        );
+      }
     });
 
     globber.on('error', (err: Error) => {
-      console.error('fatal error', err);
-      reject(err);
+      reject(
+        new FileReadError(
+          'Error scanning test directory',
+          config.test.directory,
+          err,
+        ),
+      );
     });
 
     globber.on('end', () => {
@@ -27,17 +51,18 @@ export async function readTestFiles(): Promise<string[]> {
 }
 
 export async function readConfigFile(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    let config = '';
+  const config = getConfig();
+  return new Promise((resolve) => {
+    let configContent = '';
     try {
-      config = fs.readFileSync(
-        '.qaengineer/config.md',
+      configContent = fs.readFileSync(
+        path.join(config.test.directory, 'config.md'),
         'utf8',
       );
     } catch (err) {
       // Ignore if config file doesn't exist
     }
 
-    resolve(config);
+    resolve(configContent);
   });
 }

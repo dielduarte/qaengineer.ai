@@ -2,6 +2,7 @@
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import type { MCPClientOptions } from './mcp/client.js';
+import { formatError } from './lib/errors.js';
 
 interface CommandArgs extends MCPClientOptions {}
 
@@ -33,8 +34,20 @@ yargs(hideBin(process.argv))
     },
     async (argv) => {
       const { run } = await import('./commands/run.js');
+      const result = await run(argv);
 
-      run(argv);
+      if (!result.success) {
+        console.error('\n❌ Test run failed');
+        if (result.error) {
+          console.error(formatError(result.error));
+        }
+        process.exit(1);
+      }
+
+      console.log(
+        `\n✓ Tests completed: ${result.passedTests}/${result.totalTests} passed`,
+      );
+      process.exit(0);
     },
   )
   .command<InitCommandArgs>(
@@ -43,13 +56,23 @@ yargs(hideBin(process.argv))
     (yargs) => {
       return yargs.option('skip-install', {
         type: 'boolean',
-        description: 'Skip the installation of the @qaengineer dependency',
+        description:
+          'Skip the installation of the @qaengineer dependency',
       });
     },
     async (argv) => {
       const { init } = await import('./commands/init.js');
+      const result = await init(argv['skip-install']);
 
-      init(argv['skip-install']);
+      if (!result.success) {
+        console.error('\n❌ Initialization failed');
+        if (result.error) {
+          console.error(formatError(result.error));
+        }
+        process.exit(1);
+      }
+
+      process.exit(0);
     },
   )
   .parse();

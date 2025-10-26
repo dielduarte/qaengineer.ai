@@ -14,6 +14,8 @@ import {
 } from 'ctx-zip';
 
 import { providers } from './providers.js';
+import { getConfig } from '../lib/config.js';
+import { MCPConnectionError } from '../lib/errors.js';
 
 type Provider = keyof typeof providers;
 
@@ -35,12 +37,6 @@ export type MCPClientOptions = {
   model: string;
 };
 
-const storage = 'file:/';
-const storageTools = {
-  readFile: createReadFileTool(storage),
-  grepAndSearchFile: createGrepAndSearchFileTool(storage),
-};
-
 export async function createMCPClient({
   apiKey,
   provider,
@@ -49,6 +45,8 @@ export async function createMCPClient({
   let mcp: Client;
   let transport: SSEClientTransport | null = null;
   let toolSet: ToolSet = {};
+
+  const config = getConfig();
 
   if (!providers[provider]) {
     throw new Error(`Provider ${provider} not supported`);
@@ -61,10 +59,18 @@ export async function createMCPClient({
     })
     .languageModel(model);
 
+  const storage = config.storage.path;
+  const storageTools = {
+    readFile: createReadFileTool(storage),
+    grepAndSearchFile: createGrepAndSearchFileTool(storage),
+  };
+
   async function connectToServer() {
     try {
       transport = new SSEClientTransport(
-        new URL('http://localhost:8931/sse'),
+        new URL(
+          `http://${config.mcp.host}:${config.mcp.port}/sse`,
+        ),
       );
       mcp = new Client({
         name: 'qaengineer.ai',
@@ -97,8 +103,13 @@ export async function createMCPClient({
         },
         {} as ToolSet,
       );
-    } catch (e) {
-      throw e;
+    } catch (error) {
+      throw new MCPConnectionError(
+        'Failed to connect to MCP server',
+        error instanceof Error
+          ? error
+          : new Error(String(error)),
+      );
     }
   }
 
@@ -106,13 +117,12 @@ export async function createMCPClient({
     const result = await generateText({
       model: modelInstance,
       prompt: query,
-      stopWhen: stepCountIs(Infinity),
+      stopWhen: stepCountIs(config.ai.stepCount),
       tools: { ...toolSet, ...storageTools },
-      maxRetries: 10,
+      maxRetries: config.ai.maxRetries,
       prepareStep: async ({ messages }) => {
-        const maxMessages = 5;
         const shouldCompactMessage =
-          messages.length > maxMessages;
+          messages.length > config.ai.maxMessages;
 
         if (shouldCompactMessage) {
           const compatedMessages = await compactMessages(
@@ -121,7 +131,7 @@ export async function createMCPClient({
               storage,
               boundary: {
                 type: 'first-n-messages',
-                count: maxMessages,
+                count: config.ai.maxMessages,
               },
             },
           );
