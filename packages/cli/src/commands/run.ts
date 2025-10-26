@@ -1,7 +1,14 @@
 import { log, spinner } from '@clack/prompts';
-import { createMCPClient, MCPClientOptions } from '../mcp/client.js';
+import {
+  createMCPClient,
+  MCPClientOptions,
+} from '../mcp/client.js';
 import { withVariables } from '../prompts/index.js';
 import runningAndReportingTests from '../prompts/running-and-reporting-tests.js';
+import {
+  readTestFiles,
+  readConfigFile,
+} from '../lib/files.js';
 
 export async function run(options: MCPClientOptions) {
   const s = spinner();
@@ -31,8 +38,8 @@ export async function run(options: MCPClientOptions) {
     await mcpClient.connectToServer();
 
     s.message('Reading test files...');
-    const tests = await mcpClient.readFiles();
-    const config = await mcpClient.readConfig();
+    const tests = await readTestFiles();
+    const config = await readConfigFile();
 
     const totalTests = tests.length;
     if (totalTests === 0) {
@@ -42,13 +49,20 @@ export async function run(options: MCPClientOptions) {
 
     for (let i = 0; i < tests.length; i++) {
       const test = tests[i];
-      s.message(`Processing test ${i + 1} of ${totalTests}...`);
+      s.message(
+        `Processing test ${i + 1} of ${totalTests}...`,
+      );
       const result = await mcpClient.processQueryWithAiSDK(
-        withVariables(runningAndReportingTests, { test, config }),
+        withVariables(runningAndReportingTests, {
+          test,
+          config,
+        }),
       );
 
       // Show brief result without stopping spinner
-      s.message(`Test ${i + 1} completed. Processing next...`);
+      s.message(
+        `Test ${i + 1} completed. Processing next...`,
+      );
       log.info(`Test ${i + 1} Result: ${result}`);
     }
 

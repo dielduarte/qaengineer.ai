@@ -7,25 +7,38 @@ import {
   stepCountIs,
 } from 'ai';
 import { JSONSchemaToZod } from '@dmitryrechkin/json-schema-to-zod';
-import { readdirGlob } from 'readdir-glob';
-import fs from 'node:fs';
+import {
+  compactMessages,
+  createReadFileTool,
+  createGrepAndSearchFileTool,
+} from 'ctx-zip';
 
 import { providers } from './providers.js';
 
 type Provider = keyof typeof providers;
 
+interface MCPTool {
+  name: string;
+  description?: string;
+  inputSchema: Record<string, unknown>;
+}
+
 export type MCPClient = {
   connectToServer: () => Promise<void>;
   processQueryWithAiSDK: (query: string) => Promise<string>;
   cleanup: () => Promise<void>;
-  readFiles: () => Promise<string[]>;
-  readConfig: () => Promise<string>;
 };
 
 export type MCPClientOptions = {
   apiKey: string;
   provider: Provider;
   model: string;
+};
+
+const storage = 'file:/';
+const storageTools = {
+  readFile: createReadFileTool(storage),
+  grepAndSearchFile: createGrepAndSearchFileTool(storage),
 };
 
 export async function createMCPClient({
@@ -63,13 +76,16 @@ export async function createMCPClient({
       const toolsResult = await mcp.listTools();
 
       toolSet = toolsResult.tools.reduce(
-        (acc: any, tool: any) => {
+        (acc: ToolSet, tool: MCPTool) => {
           acc[tool.name] = aiTool({
             description: tool.description,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             inputSchema: JSONSchemaToZod.convert(
-              tool.inputSchema as any,
+              tool.inputSchema,
             ) as any,
-            execute: async (args: any) => {
+            execute: async (
+              args: Record<string, unknown>,
+            ) => {
               const result = await mcp.callTool({
                 name: tool.name,
                 arguments: args,
@@ -90,9 +106,33 @@ export async function createMCPClient({
     const result = await generateText({
       model: modelInstance,
       prompt: query,
-      stopWhen: stepCountIs(30),
-      tools: toolSet,
+      stopWhen: stepCountIs(Infinity),
+      tools: { ...toolSet, ...storageTools },
       maxRetries: 10,
+      prepareStep: async ({ messages }) => {
+        const maxMessages = 5;
+        const shouldCompactMessage =
+          messages.length > maxMessages;
+
+        if (shouldCompactMessage) {
+          const compatedMessages = await compactMessages(
+            messages,
+            {
+              storage,
+              boundary: {
+                type: 'first-n-messages',
+                count: maxMessages,
+              },
+            },
+          );
+
+          return {
+            messages: compatedMessages,
+          };
+        }
+
+        return { messages };
+      },
     });
 
     return result.text;
@@ -102,54 +142,9 @@ export async function createMCPClient({
     await mcp.close();
   }
 
-  async function readFiles(): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      const globber = readdirGlob('.qaengineer/', {
-        pattern: '**/*.md',
-        ignore: ['config.md'],
-      });
-      const files: string[] = [];
-
-      globber.on('match', (match: any) => {
-        const file = fs.readFileSync(
-          match.absolute,
-          'utf8',
-        );
-        files.push(file);
-      });
-
-      globber.on('error', (err: any) => {
-        console.error('fatal error', err);
-        reject(err);
-      });
-
-      globber.on('end', () => {
-        resolve(files);
-      });
-    });
-  }
-
-  async function readConfig(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let config = '';
-      try {
-        config = fs.readFileSync(
-          '.qaengineer/config.md',
-          'utf8',
-        );
-      } catch (err) {
-        // Ignore if config file doesn't exist
-      }
-
-      resolve(config);
-    });
-  }
-
   return {
     connectToServer,
     processQueryWithAiSDK,
     cleanup,
-    readFiles,
-    readConfig,
   };
 }

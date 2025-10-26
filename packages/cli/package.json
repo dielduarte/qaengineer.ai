@@ -29,6 +29,7 @@
     "@ai-sdk/openai": "^2.0.12",
     "@types/yargs": "^17.0.33",
     "ai": "^5.0.32",
+    "ctx-zip": "^0.0.7",
     "typescript": "^5.0.0"
   },
   "keywords": [
