@@ -4,6 +4,11 @@
 
 ### _Write tests in plain English. Let AI handle the rest._
 
+> **⚠️ RESEARCH PHASE - NOT PRODUCTION READY**
+>
+> This project is currently in active research and development phase. It is **not ready for production use**.
+> APIs, features, and functionality may change significantly. Use at your own risk.
+
 [![npm version](https://badge.fury.io/js/%40qaengineer%2Fcli.svg)](https://badge.fury.io/js/%40qaengineer%2Fcli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
