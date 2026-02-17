@@ -13,7 +13,7 @@
     "@qaengineer": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias && chmod +x dist/index.js",
     "dev": "tsc --watch",
     "start": "node dist/index.js"
   },
@@ -21,12 +21,11 @@
     "@ai-sdk/anthropic": "^2.0.12",
     "@ai-sdk/openai": "^2.0.12",
     "@clack/prompts": "^0.10.1",
-    "@dmitryrechkin/json-schema-to-zod": "^1.0.1",
-    "@modelcontextprotocol/sdk": "^1.11.0",
+    "agent-browser": "^0.1.0",
     "ai": "^5.0.32",
-    "ctx-zip": "^0.0.7",
     "readdir-glob": "^2.0.1",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@types/yargs": "^17.0.33",
@@ -39,7 +38,7 @@
     "e2e",
     "ai",
     "automation",
-    "playwright",
+    "browser",
     "cli",
     "qaengineer"
   ],

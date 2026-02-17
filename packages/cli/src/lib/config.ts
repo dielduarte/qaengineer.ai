@@ -1,12 +1,6 @@
-export interface MCPConfig {
-  port: number;
-  host: string;
-  outputDir: string;
-  healthCheckTimeout: number;
-}
-
-export interface StorageConfig {
-  path: string;
+export interface BrowserConfig {
+  commandTimeout: number;
+  sessionPrefix: string;
 }
 
 export interface AIConfig {
@@ -22,8 +16,7 @@ export interface TestConfig {
 }
 
 export interface AppConfig {
-  mcp: MCPConfig;
-  storage: StorageConfig;
+  browser: BrowserConfig;
   ai: AIConfig;
   test: TestConfig;
 }
@@ -39,20 +32,13 @@ function parseEnvInt(
 
 export function loadConfig(): AppConfig {
   return {
-    mcp: {
-      port: parseEnvInt(process.env.MCP_PORT, 8931),
-      host: process.env.MCP_HOST || 'localhost',
-      outputDir:
-        process.env.MCP_OUTPUT_DIR || 'playwright-output',
-      healthCheckTimeout: parseEnvInt(
-        process.env.MCP_HEALTH_TIMEOUT,
+    browser: {
+      commandTimeout: parseEnvInt(
+        process.env.BROWSER_COMMAND_TIMEOUT,
         30000,
       ),
-    },
-    storage: {
-      path:
-        process.env.STORAGE_PATH ||
-        `file://${process.cwd()}`,
+      sessionPrefix:
+        process.env.BROWSER_SESSION_PREFIX || 'qa',
     },
     ai: {
       maxMessages: parseEnvInt(

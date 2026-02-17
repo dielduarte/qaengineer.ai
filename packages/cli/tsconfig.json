@@ -14,7 +14,7 @@
     "paths": {
       "commands/*": ["commands/*"],
       "lib/*": ["lib/*"],
-      "mcp/*": ["mcp/*"],
+      "browser/*": ["browser/*"],
       "prompts/*": ["prompts/*"]
     }
   },

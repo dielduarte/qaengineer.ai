@@ -11,17 +11,17 @@ export class QAEngineError extends Error {
   }
 }
 
-export class MCPConnectionError extends QAEngineError {
+export class BrowserCommandError extends QAEngineError {
   constructor(message: string, cause?: Error) {
-    super(message, 'MCP_CONNECTION_ERROR', cause);
-    this.name = 'MCPConnectionError';
+    super(message, 'BROWSER_COMMAND_ERROR', cause);
+    this.name = 'BrowserCommandError';
   }
 }
 
-export class MCPServerStartError extends QAEngineError {
+export class BrowserSessionError extends QAEngineError {
   constructor(message: string, cause?: Error) {
-    super(message, 'MCP_SERVER_START_ERROR', cause);
-    this.name = 'MCPServerStartError';
+    super(message, 'BROWSER_SESSION_ERROR', cause);
+    this.name = 'BrowserSessionError';
   }
 }
 

@@ -1,6 +1,8 @@
 export const providers = {
   anthropic: async () => {
-    const { createAnthropic } = await import('@ai-sdk/anthropic');
+    const { createAnthropic } = await import(
+      '@ai-sdk/anthropic'
+    );
 
     return {
       createProvider: createAnthropic,

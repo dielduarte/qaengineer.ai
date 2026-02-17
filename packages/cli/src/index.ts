@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import type { MCPClientOptions } from 'mcp/client.js';
+import type { BrowserClientOptions } from 'browser/client.js';
 import { formatError } from 'lib/errors.js';
 
-interface CommandArgs extends MCPClientOptions {}
+interface CommandArgs extends BrowserClientOptions {}
 
 interface InitCommandArgs {
   'skip-install': boolean;

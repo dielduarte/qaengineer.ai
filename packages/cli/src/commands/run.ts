@@ -1,16 +1,14 @@
 import { log, spinner } from '@clack/prompts';
-import type { ChildProcess } from 'child_process';
 import {
-  createMCPClient,
-  MCPClientOptions,
-} from 'mcp/client.js';
+  createBrowserClient,
+  BrowserClientOptions,
+} from 'browser/client.js';
 import { withVariables } from 'prompts/index.js';
 import runningAndReportingTests from 'prompts/running-and-reporting-tests.js';
 import {
   readTestFiles,
   readConfigFile,
 } from 'lib/files.js';
-import { getConfig } from 'lib/config.js';
 import type {
   TestRunResult,
   TestResult,
@@ -18,39 +16,16 @@ import type {
 import { formatError } from 'lib/errors.js';
 
 export async function run(
-  options: MCPClientOptions,
+  options: BrowserClientOptions,
 ): Promise<TestRunResult> {
   const s = spinner();
-  let mcpServer: ChildProcess | null = null;
+  let client: Awaited<
+    ReturnType<typeof createBrowserClient>
+  > | null = null;
 
   try {
-    s.start('Starting Playwright MCP server...');
-    const { spawn } = await import('child_process');
-
-    const config = getConfig();
-    mcpServer = spawn('npx', [
-      '@playwright/mcp@latest',
-      '--port',
-      config.mcp.port.toString(),
-      '--output-dir',
-      config.mcp.outputDir,
-    ]);
-
-    const mcpClient = await createMCPClient(options);
-
-    await new Promise((resolve) => {
-      if (mcpServer && mcpServer.stderr) {
-        mcpServer.stderr.on('data', async (data) => {
-          s.message(
-            'MCP server started, creating client...',
-          );
-          resolve(true);
-        });
-      }
-    });
-
-    s.message('Connecting to server...');
-    await mcpClient.connectToServer();
+    s.start('Creating browser client...');
+    client = await createBrowserClient(options);
 
     s.message('Reading test files...');
     const tests = await readTestFiles();
@@ -77,13 +52,12 @@ export async function run(
       );
 
       try {
-        const output =
-          await mcpClient.processQueryWithAiSDK(
-            withVariables(runningAndReportingTests, {
-              test,
-              config: testConfig,
-            }),
-          );
+        const output = await client.processQueryWithAiSDK(
+          withVariables(runningAndReportingTests, {
+            test,
+            config: testConfig,
+          }),
+        );
 
         results.push({
           name: `Test ${i + 1}`,
@@ -145,8 +119,8 @@ export async function run(
       error: err,
     };
   } finally {
-    if (mcpServer) {
-      mcpServer.kill();
+    if (client) {
+      await client.cleanup();
     }
   }
 }
