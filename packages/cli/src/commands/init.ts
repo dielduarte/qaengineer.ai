@@ -82,8 +82,7 @@ function updatePackageJson(projectRoot: string): boolean {
         packageJson.scripts = {};
       }
 
-      packageJson.scripts.qaengineer =
-        "@qaengineer run --apiKey={your_key} --provider={provider's name} --model={model's name}";
+      packageJson.scripts.qaengineer = '@qaengineer run';
 
       fs.writeFileSync(
         packageJsonPath,

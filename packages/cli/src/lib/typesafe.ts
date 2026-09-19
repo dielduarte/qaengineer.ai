@@ -7,7 +7,15 @@ import {
 } from '@typesafe-ai/sdk';
 import { deriveActionKind } from 'browser/actions.js';
 import { getConfig } from 'lib/config.js';
-import type { AgentState, Decision } from 'lib/types.js';
+import {
+  VALUE_CRITERIA,
+  type ValueKind,
+} from 'lib/values.js';
+import type {
+  AgentState,
+  Decision,
+  ElementCandidate,
+} from 'lib/types.js';
 
 const FINISH_PASS = '__finish_pass';
 const FINISH_FAIL = '__finish_fail';
@@ -106,4 +114,24 @@ export async function decideNextStep(
     },
     ...trace,
   };
+}
+
+// Classify what kind of value a field expects. Code then generates the value
+// deterministically (see lib/values.ts) — this replaces the per-fill LLM call.
+export async function decideFillKind(
+  client: TypeSafeClient,
+  candidate: ElementCandidate,
+  state: AgentState,
+): Promise<ValueKind> {
+  const { answers } = await client.systemOne({
+    state: state as unknown as EntryType,
+    questions: {
+      kind: choice(
+        `What kind of value should be typed into the field "${candidate.name}" (role: ${candidate.role})? Consider the goal and the surrounding page.`,
+        VALUE_CRITERIA,
+      ),
+    },
+  });
+
+  return answers.kind.choice as ValueKind;
 }

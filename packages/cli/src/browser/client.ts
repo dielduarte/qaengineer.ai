@@ -11,19 +11,18 @@ import { extractStartUrl } from 'lib/url.js';
 import {
   createTypeSafeClient,
   decideNextStep,
+  decideFillKind,
 } from 'lib/typesafe.js';
 import {
-  generateReport,
-  generateValue,
-  type LlmOptions,
-} from 'lib/llm.js';
+  parseConfigValues,
+  valueForKind,
+} from 'lib/values.js';
+import { buildReport } from 'lib/report.js';
 import type {
   Action,
   AgentState,
   HistoryEntry,
 } from 'lib/types.js';
-
-type Provider = LlmOptions['provider'];
 
 export type RunTestOutput = {
   output: string;
@@ -38,15 +37,7 @@ export type BrowserClient = {
   cleanup: () => Promise<void>;
 };
 
-export type BrowserClientOptions = {
-  apiKey: string;
-  provider: Provider;
-  model: string;
-};
-
-export async function createBrowserClient(
-  options: BrowserClientOptions,
-): Promise<BrowserClient> {
+export async function createBrowserClient(): Promise<BrowserClient> {
   const config = getConfig();
   const tsClient = createTypeSafeClient();
 
@@ -55,6 +46,8 @@ export async function createBrowserClient(
     testConfig: string,
   ): Promise<RunTestOutput> {
     const history: HistoryEntry[] = [];
+    const values: { field: string; value: string }[] = [];
+    const configValues = parseConfigValues(testConfig);
     let priorSteps = 0;
     let passed = false;
     let exhausted = true;
@@ -102,11 +95,18 @@ export async function createBrowserClient(
       const { candidate } = decision;
       let action: Action;
       if (decision.action === 'fill') {
-        const value = await generateValue(
-          options,
+        const valueKind = await decideFillKind(
+          tsClient,
           candidate,
           state,
         );
+        const value = valueForKind(valueKind, configValues);
+        values.push({
+          field:
+            candidate.name ||
+            `${candidate.role} ${candidate.ref}`,
+          value,
+        });
         action = {
           kind: 'fill',
           ref: candidate.ref,
@@ -137,9 +137,10 @@ export async function createBrowserClient(
       }
     }
 
-    const output = await generateReport(options, {
+    const output = buildReport({
       goal: test,
       history,
+      values,
       passed,
       exhausted,
     });

@@ -1,8 +1,5 @@
 import { log, spinner } from '@clack/prompts';
-import {
-  createBrowserClient,
-  BrowserClientOptions,
-} from 'browser/client.js';
+import { createBrowserClient } from 'browser/client.js';
 import {
   readTestFiles,
   readConfigFile,
@@ -17,9 +14,7 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
-export async function run(
-  options: BrowserClientOptions,
-): Promise<TestRunResult> {
+export async function run(): Promise<TestRunResult> {
   const s = spinner();
   let client: Awaited<
     ReturnType<typeof createBrowserClient>
@@ -27,7 +22,7 @@ export async function run(
 
   try {
     s.start('Creating browser client...');
-    client = await createBrowserClient(options);
+    client = await createBrowserClient();
 
     s.message('Reading test files...');
     const tests = await readTestFiles();
