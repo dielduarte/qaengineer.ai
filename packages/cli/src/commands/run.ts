@@ -1,10 +1,5 @@
 import { log, spinner } from '@clack/prompts';
-import {
-  createBrowserClient,
-  BrowserClientOptions,
-} from 'browser/client.js';
-import { withVariables } from 'prompts/index.js';
-import runningAndReportingTests from 'prompts/running-and-reporting-tests.js';
+import { createBrowserClient } from 'browser/client.js';
 import {
   readTestFiles,
   readConfigFile,
@@ -15,9 +10,11 @@ import type {
 } from 'lib/types.js';
 import { formatError } from 'lib/errors.js';
 
-export async function run(
-  options: BrowserClientOptions,
-): Promise<TestRunResult> {
+function formatDuration(ms: number): string {
+  return `${(ms / 1000).toFixed(1)}s`;
+}
+
+export async function run(): Promise<TestRunResult> {
   const s = spinner();
   let client: Awaited<
     ReturnType<typeof createBrowserClient>
@@ -25,7 +22,7 @@ export async function run(
 
   try {
     s.start('Creating browser client...');
-    client = await createBrowserClient(options);
+    client = await createBrowserClient();
 
     s.message('Reading test files...');
     const tests = await readTestFiles();
@@ -44,6 +41,7 @@ export async function run(
     }
 
     const results: TestResult[] = [];
+    const runStart = Date.now();
 
     for (let i = 0; i < tests.length; i++) {
       const test = tests[i];
@@ -51,24 +49,28 @@ export async function run(
         `Processing test ${i + 1} of ${totalTests}...`,
       );
 
+      const testStart = Date.now();
       try {
-        const output = await client.processQueryWithAiSDK(
-          withVariables(runningAndReportingTests, {
-            test,
-            config: testConfig,
-          }),
+        const { output, passed } = await client.runTest(
+          test,
+          testConfig,
         );
+        const durationMs = Date.now() - testStart;
 
         results.push({
           name: `Test ${i + 1}`,
-          success: true,
+          success: passed,
           output,
+          durationMs,
         });
 
         s.message(
           `Test ${i + 1} completed. Processing next...`,
         );
         log.info(`Test ${i + 1} Result: ${output}`);
+        log.info(
+          `Test ${i + 1} took ${formatDuration(durationMs)}`,
+        );
       } catch (error) {
         const err =
           error instanceof Error
@@ -78,6 +80,7 @@ export async function run(
           name: `Test ${i + 1}`,
           success: false,
           output: '',
+          durationMs: Date.now() - testStart,
           error: err,
         });
         log.error(
@@ -86,6 +89,8 @@ export async function run(
       }
     }
 
+    const totalMs = Date.now() - runStart;
+
     const passedTests = results.filter(
       (r) => r.success,
     ).length;
@@ -93,7 +98,9 @@ export async function run(
       (r) => !r.success,
     ).length;
 
-    s.stop('All tests completed!');
+    s.stop(
+      `All tests completed in ${formatDuration(totalMs)}!`,
+    );
 
     return {
       success: failedTests === 0,

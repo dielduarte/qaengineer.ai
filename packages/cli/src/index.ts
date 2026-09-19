@@ -1,40 +1,20 @@
 #!/usr/bin/env node
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import type { BrowserClientOptions } from 'browser/client.js';
 import { formatError } from 'lib/errors.js';
-
-interface CommandArgs extends BrowserClientOptions {}
 
 interface InitCommandArgs {
   'skip-install': boolean;
 }
 
 yargs(hideBin(process.argv))
-  .command<CommandArgs>(
+  .command(
     'run',
     'Execute the tests',
-    (yargs) => {
-      return yargs
-        .option('apiKey', {
-          type: 'string',
-          description: 'The API key for the model',
-          demandOption: true,
-        })
-        .option('provider', {
-          type: 'string',
-          description: 'The provider to use',
-          demandOption: true,
-        })
-        .option('model', {
-          type: 'string',
-          description: "The provider's model to use",
-          demandOption: true,
-        });
-    },
-    async (argv) => {
+    (yargs) => yargs,
+    async () => {
       const { run } = await import('commands/run.js');
-      const result = await run(argv);
+      const result = await run();
 
       if (!result.success) {
         console.error('\n❌ Test run failed');

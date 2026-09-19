@@ -4,9 +4,17 @@ export interface BrowserConfig {
 }
 
 export interface AIConfig {
-  maxMessages: number;
   maxRetries: number;
-  stepCount: number;
+}
+
+export interface TypeSafeConfig {
+  model?: string;
+  goalMetThreshold: number;
+}
+
+export interface LoopConfig {
+  maxSteps: number;
+  windowSize: number;
 }
 
 export interface TestConfig {
@@ -18,7 +26,18 @@ export interface TestConfig {
 export interface AppConfig {
   browser: BrowserConfig;
   ai: AIConfig;
+  typesafe: TypeSafeConfig;
+  loop: LoopConfig;
   test: TestConfig;
+}
+
+function parseEnvFloat(
+  value: string | undefined,
+  defaultValue: number,
+): number {
+  if (!value) return defaultValue;
+  const parsed = parseFloat(value);
+  return isNaN(parsed) ? defaultValue : parsed;
 }
 
 function parseEnvInt(
@@ -35,23 +54,29 @@ export function loadConfig(): AppConfig {
     browser: {
       commandTimeout: parseEnvInt(
         process.env.BROWSER_COMMAND_TIMEOUT,
-        30000,
+        60000,
       ),
       sessionPrefix:
         process.env.BROWSER_SESSION_PREFIX || 'qa',
     },
     ai: {
-      maxMessages: parseEnvInt(
-        process.env.AI_MAX_MESSAGES,
-        5,
-      ),
       maxRetries: parseEnvInt(
         process.env.AI_MAX_RETRIES,
         10,
       ),
-      stepCount: parseEnvInt(
-        process.env.AI_STEP_COUNT,
-        Infinity,
+    },
+    typesafe: {
+      model: process.env.TYPESAFE_DEFAULT_MODEL,
+      goalMetThreshold: parseEnvFloat(
+        process.env.TYPESAFE_GOAL_MET_THRESHOLD,
+        0.7,
+      ),
+    },
+    loop: {
+      maxSteps: parseEnvInt(process.env.LOOP_MAX_STEPS, 40),
+      windowSize: parseEnvInt(
+        process.env.LOOP_WINDOW_SIZE,
+        12,
       ),
     },
     test: {

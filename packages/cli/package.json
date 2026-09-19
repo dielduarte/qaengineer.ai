@@ -18,19 +18,18 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "^2.0.12",
-    "@ai-sdk/openai": "^2.0.12",
     "@clack/prompts": "^0.10.1",
-    "agent-browser": "^0.1.0",
-    "ai": "^5.0.32",
+    "@faker-js/faker": "^10.6.0",
+    "@typesafe-ai/sdk": "^0.6.0",
+    "agent-browser": "^0.38.1",
     "readdir-glob": "^2.0.1",
-    "yargs": "^17.7.2",
-    "zod": "^3.23.0"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@types/yargs": "^17.0.33",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^5.0.1"
   },
   "keywords": [
     "qa",
